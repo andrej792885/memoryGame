@@ -44,10 +44,10 @@ this.system = this.system || {};
         let sameCards = 0;
         let fullName = this._generateRandomFieldName();
 
-        for(const i = 0; i < this.rows; i++){
+        for(let i = 0; i < this.rows; i++){
             y = i * this.fieldHeight;
             spacingY  = i * this.fieldSpacing;
-            for(const j = 0; j < this.columns; j++){
+            for(let j = 0; j < this.columns; j++){
                 x = j * this.fieldWidth;
                 spacingX = j * this.fieldSpacing;
                 const overlayCard = new createjs.Bitmap(queue.getResult("cardsAtlas"));
@@ -73,7 +73,7 @@ this.system = this.system || {};
 
     p.rearrangeFields = function () {
         const children = this.numChildren;
-        for(const i = 0; i < children; i++){
+        for(let i = 0; i < children; i++){
             const randomNum = Math.round(Math.random() * (children-1));
             const child = this.getChildAt(i);
             const randomChild = this.getChildAt(randomNum);
@@ -155,7 +155,7 @@ this.system = this.system || {};
     };
 
     p._coverCards = function () {
-        for(const i = 0; i < this._revealedCards.length; i++){
+        for(let i = 0; i < this._revealedCards.length; i++){
             this._revealedCards[i].swapImages(this._overlayCard,true);
         }
         this._revealedCards = [];
