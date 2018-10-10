@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://fonts.googleapis.com/css?family=Russo+One" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+    <script src="js/CustomMethods.js"></script>
+    <script src="js/MainGame.js"></script>
+    <script src="js/Player.js"></script>
+    <script src="js/Options.js"></script>
+    <script src="js/SolveCreditsComponent.js"></script>
+    <script src="js/PaginationComponent.js"></script>
+    <script src="js/AbstractPuzzleGame.js"></script>
+    <script src="js/AbstractPuzzleBoard.js"></script>
+    <script src="js/AbstractPuzzleField.js"></script>
+    <script src="js/ShapeButton.js"></script>
+    <script src="js/ImageButton.js"></script>
+    <script src="js/Timer.js"></script>
+    <script src="js/MemoryGame.js"></script>
+    <script src="js/MemoryField.js"></script>
+    <script src="js/MemoryBoard.js"></script>
+    <script src="js/MemoryLevelOptions.js"></script>
+    <script>
+
+        "use strict";
+        let stage;
+        let queue;
+        let game;
+        let percentLoaded;
+        let loading;
+
+        function init(){
+
+            stage = new createjs.Stage(document.getElementById("gameStage"));
+            queue = new createjs.LoadQueue(false);
+            createjs.Sound.alternateExtensions = ["mp3"];
+            queue.installPlugin(createjs.Sound);
+
+            const x = (1920/2);
+            const y = (1080/2);
+
+            percentLoaded = new createjs.Text("" , "90px Russo One" , "white");
+            percentLoaded.textAlign = "center";
+            percentLoaded.textBaseline = "middle";
+            percentLoaded.x = x;
+            percentLoaded.y = y;
+
+            let background = new createjs.Shape();
+            background.graphics.beginFill("black").drawRect(0,0,1920,1080);
+
+            loading = new createjs.Shape();
+            loading.x = x;
+            loading.y = y;
+            loading.rotation = -90;
+            stage.addChild(background,loading,percentLoaded);
+            startAssetsLoading();
+        }
+
+        function startAssetsLoading() {
+            queue.installPlugin(createjs.Sound);
+            queue.on("complete", loadComplete);
+            queue.on("progress", handleProgress);
+            queue.loadManifest([
+                {id: "background1", src:"assets/gameComponents/backgrounds/background1.jpg"},
+                {id: "background2", src:"assets/gameComponents/backgrounds/background2.jpg"},
+                {id: "background3", src:"assets/gameComponents/backgrounds/background3.jpg"},
+                {id: "background4", src:"assets/gameComponents/backgrounds/background4.jpg"},
+                {id: "background5", src:"assets/gameComponents/backgrounds/background5.jpg"},
+                {id: "b1", src:"assets/gameComponents/options/b1.png"},
+                {id: "b2", src:"assets/gameComponents/options/b2.png"},
+                {id: "b3", src:"assets/gameComponents/options/b3.png"},
+                {id: "b4", src:"assets/gameComponents/options/b4.png"},
+                {id: "b5", src:"assets/gameComponents/options/b5.png"},
+                {id: "soundOn", src:"assets/gameComponents/options/soundOn.png"},
+                {id: "soundOff", src:"assets/gameComponents/options/soundOff.png"},
+                {id: "optionsBackground", src:"assets/gameComponents/options/optionsBackground.png"},
+                {id: "playButton", src:"assets/gameComponents/playButton.png"},
+                {id: "optionsButton", src:"assets/gameComponents/optionsButton.png"},
+                {id: "solved", src:"assets/gameComponents/solved.png"},
+                {id: "logo", src:"assets/gameComponents/logo.png"},
+                {id: "paginationBack", src:"assets/gameComponents/paginationBackground.png"},
+                {id: "leftBtn", src:"assets/gameComponents/left.png"},
+                {id: "rightBtn", src:"assets/gameComponents/right.png"},
+                {id: "backBtn", src:"assets/gameComponents/back.png"},
+                {id: "showImgButton", src:"assets/gameComponents/showImgButton.png"},
+                {id: "showFramesButton", src:"assets/gameComponents/showFramesButton.png"},
+                {id: "solveButton", src:"assets/gameComponents/solveButton.png"},
+                {id: "click", src:"assets/sounds/click.ogg"},
+                {id: "complete", src:"assets/sounds/complete.ogg"},
+                {id: "switch", src:"assets/sounds/switch.ogg"},
+
+                {id: "cardsAtlas", src:"assets/images/cardsAtlas.png"},
+                {id: "cardsJson", src:"assets/images/cardsAtlas.json"},
+
+                {id: "memoryMain1", src:"assets/images/memoryMain1.png"},
+                {id: "memoryMain2", src:"assets/images/memoryMain2.png"},
+                {id: "memoryMain3", src:"assets/images/memoryMain3.png"},
+                {id: "memoryMain4", src:"assets/images/memoryMain4.png"},
+                {id: "memoryMain5", src:"assets/images/memoryMain5.png"},
+                {id: "memoryMain6", src:"assets/images/memoryMain6.png"},
+                {id: "memoryMain7", src:"assets/images/memoryMain7.png"},
+                {id: "memoryMain8", src:"assets/images/memoryMain8.png"},
+                {id: "memoryMain9", src:"assets/images/memoryMain9.png"},
+                {id: "memoryMain10", src:"assets/images/memoryMain10.png"},
+                {id: "memoryMain11", src:"assets/images/memoryMain11.png"},
+                {id: "memoryMain12", src:"assets/images/memoryMain12.png"},
+            ]);
+        }
+
+        function handleProgress(event){
+            percentLoaded.text = Math.round(event.progress* 100) + " %";
+            const fill = Math.round(event.progress * 360);
+            loading.graphics.clear().setStrokeStyle(20).beginStroke("#d0ff00").arc(0, 0, 150, 0, (Math.PI/180)*fill).endStroke();
+            stage.update();
+        }
+
+        function loadComplete() {
+            stage.removeAllChildren();
+            game = new system.MainGame();
+            stage.addChild(game);
+            percentLoaded = null;
+            loading = null;
+            setupStage();
+        }
+
+        function setupStage(){
+            createjs.Ticker.timingMode = createjs.Ticker.RAF;
+            createjs.Ticker.addEventListener("tick", function(e){ // e needs because animation wont change framerate without it
+                game.render(e);
+            });
+        }
+
+    </script>
+
+</head>
+<body onload="init();" oncontextmenu= "return false">
+
+<div class="container">
+    <canvas id="gameStage" width="1920" height="1080"></canvas>
+</div>
+</body>
+</html>
