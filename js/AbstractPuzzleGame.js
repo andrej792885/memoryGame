@@ -182,11 +182,8 @@ this.system = this.system || {};
             const arrToCheck = this.gameName.toLowerCase() + "PuzzleSolvedLevels";
             if(this.mainGame.player[arrToCheck].hasOwnProperty(button.name)){
                 button.showSticker(true);
-                //button.updateBestTimeTxt(this.timer.formatTime(this.mainGame.player[arrToCheck][button.name]));
-                console.log("1");
                 button.updateBestTimeTxt(system.CustomMethods.formatTime(this.mainGame.player[arrToCheck][button.name]));
             }else{
-                console.log("2");
                 button.updateBestTimeTxt("");
             }
         }
