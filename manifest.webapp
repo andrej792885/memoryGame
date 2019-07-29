@@ -1,0 +1,13 @@
+{
+    "name": "Find 3",
+    "description": "Simple memory game",
+    "launch_path": "/",
+    "icons": {
+        "128": "/img/icon-128.jpg"
+    },
+    "developer": {
+        "name": "Milan Bogosavljevic",
+        "url": "https://milanbogosavljevic.github.io/cv/"
+    },
+    "default_locale": "en"
+}
