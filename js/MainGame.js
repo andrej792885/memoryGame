@@ -95,7 +95,7 @@ this.system = this.system || {};
         if(stats === null){
             stats = {
                 "memoryPuzzleSolvedLevels": {},
-                "solveCredits": 10,
+                "solveCredits": 0,
                 "solveCreditsBarLevel": 0,
                 "totalTimePlayed":0
             };
